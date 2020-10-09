@@ -1,0 +1,27 @@
+version: '3'
+services:
+  django:
+    container_name: at_api_django
+    build: ./
+    restart: always
+    env_file: .env
+    expose:
+      - '8000'
+    volumes:
+      - ./:/srv/at_api
+      - django_static_vol:/srv/at_api/.static
+
+  nginx:
+    container_name: at_api_nginx
+    build: ./nginx
+    restart: always
+    ports:
+      - '80:80'
+    links:
+      - django
+    volumes:
+      - ./nginx/try_files:/var/www
+      - django_static_vol:/var/static
+
+volumes:
+  django_static_vol:
